@@ -25,8 +25,9 @@ export default class LoginForm extends React.Component{
         this.state.onRegister(
             e,
             this.state.username,
-            this.state.login,
-            this.state.password
+            this.state.password,
+            this.state.login
+            
         );
     };
     

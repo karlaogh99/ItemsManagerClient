@@ -25,8 +25,8 @@ export default class AppContent extends React.Component{
                 "/auth/login",
                 {username: username, password: password}
                 ).then((response) => {
+                    setAuthToken(response.data.token);
                     this.setState({componentToShow: "messages"});
-                    setAuthToken(response.data.token)
                 }).catch((error) => {
                     this.setState({componentToShow: "welcome"});
                 });
@@ -39,7 +39,9 @@ export default class AppContent extends React.Component{
                     username: username, 
                     password: password}
                 ).then((response) => {
+                    setAuthToken(response.data.token);
                     this.setState({componentToShow: "messages"});
+                    
                 }).catch((error) => {
                     this.setState({componentToShow: "welcome"});
                 });
@@ -48,8 +50,7 @@ export default class AppContent extends React.Component{
     render(){
         return(
             <div>
-                <Buttons login={this.login} logout={this.logout}
-                />
+                <Buttons login={this.login} logout={this.logout}/>
                 {this.state.componentToShow === "welcome" && <WelcomeContent/>}
                 {this.state.componentToShow === "messages" && <AuthContent/>}
                 {this.state.componentToShow === "login" && <LoginForm onLogin={this.onLogin} onRegister={this.onRegister}/>} 

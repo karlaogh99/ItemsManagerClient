@@ -2,7 +2,8 @@ import * as React from 'react';
 import WelcomeContent from './WelcomeContent.js';
 import AuthContent from './AuthContent.js';
 import LoginForm from './LoginForm.js';
-import Buttons from './Buttons.js';
+import ButtonLogin from './Buttons_login.js';
+import ButtonLogout from './Buttons_logout.js';
 
 import { request, setAuthToken } from './axios.helper.js';
 
@@ -50,7 +51,7 @@ export default class AppContent extends React.Component{
     render(){
         return(
             <div>
-                <Buttons login={this.login} logout={this.logout}/>
+                {this.state.componentToShow === "welcome" ? <ButtonLogin login={this.login}/> : <ButtonLogout logout={this.logout}/> }
                 {this.state.componentToShow === "welcome" && <WelcomeContent/>}
                 {this.state.componentToShow === "messages" && <AuthContent/>}
                 {this.state.componentToShow === "login" && <LoginForm onLogin={this.onLogin} onRegister={this.onRegister}/>} 

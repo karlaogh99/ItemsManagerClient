@@ -12,7 +12,7 @@ export const setAuthToken = (token) => {
 
 export const request = (method, url, data) => {
     let headers = {};
-    if(getAuthToken() !== null && getAuthToken() !== null){
+    if(getAuthToken() !== null && getAuthToken() !== null && url !=="/auth/login" && url!=="/auth/register"){
         headers={"Authorization": `Bearer ${getAuthToken()}`}
     }
     return axios({

@@ -12,7 +12,14 @@ class AuthContent extends Component {
             selectedItem: null,
             showModal: false,
             selectedItemDetails: null,
-            loadingDetails: false
+            loadingDetails: false,
+            showCreateForm: false, 
+            newItem: {
+                item_code: '',
+                description: '',
+                price: '',
+                state: '',
+            },
         };
     };
 
@@ -28,11 +35,9 @@ class AuthContent extends Component {
     loadSelectedItemDetails = (item) => {
         this.setState({ loadingDetails: true });
         console.log("llega " + item.item_id + " "+ this.state.selectedItem +  this.state.showModal);
-
         // Realizar una solicitud para obtener los detalles del item
         request('GET', `/itemSuppliers/${item.item_id}`)
             .then((response) => {
-                console.log('Item details:', response.data); // Agregar este console.log
                 this.setState({ selectedItemDetails: response.data, loadingDetails: false });
             })
             .catch((error) => {
@@ -40,8 +45,7 @@ class AuthContent extends Component {
                 this.setState({ loadingDetails: false });
             });
     };
-
-    componentDidMount(){
+    fetchItemList(){
         request(
             "GET",
             "/allItems",
@@ -49,24 +53,153 @@ class AuthContent extends Component {
         ).then((response) => {
             this.setState({data : response.data})
         });
+    }
+
+    componentDidMount(){
+        this.fetchItemList();
     };
 
     handleFilterStateChange = (event) => {
         this.setState({ filterState: event.target.value });
     };
+     // Método para manejar la apertura del formulario de creación de nuevo item
+     handleOpenCreateForm = () => {
+        this.setState({ showCreateForm: true });
+    };
+
+    // Método para manejar el cierre del formulario de creación de nuevo item
+    handleCloseCreateForm = () => {
+        this.setState({ showCreateForm: false });
+    };
+    handleCreateNewItem = () => {
+        const { newItem } = this.state;
+    
+        // Verificar que los campos obligatorios estén completos antes de enviar la solicitud
+        if (!newItem.item_code || !newItem.description || !newItem.price) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+        newItem.state = 'Activo';
+
+            request(
+            "POST",
+            "/creates",
+            newItem)
+            .then(response => {
+                console.log('New item created:', response.data);
+                this.fetchItemList();
+
+                // Puedes realizar acciones adicionales después de crear el nuevo item
+            })
+            .catch(error => {
+                console.error('Error creating new item:', error);
+                // Maneja el error de manera adecuada, como mostrando un mensaje de error al usuario
+            });
+            this.setState({
+                showCreateForm: false,
+                newItem: {
+                    item_code: '',
+                    description: '',
+                    price: '',
+                    state: '',
+                },
+            });
+    };
+    
+    handleNewItemChange = (field, value) => {
+        this.setState((prevState) => ({
+            newItem: {
+                ...prevState.newItem,
+                [field]: value
+            }
+        }));
+    };
+    
+
 
     render(){
         
-        const { data, filterState, showModal, selectedItem } = this.state;
+        const { data, filterState, showModal, selectedItem, showCreateForm, newItem  } = this.state;
         const filteredData = data.filter((item) =>
             filterState === '' || item.state === filterState
         );
         return(
             <div className='row justify-content-md-center'>
+                {showCreateForm && (
+                    <div className='col-md-8 mt-3'>
+                        <div className='card'>
+                            <div className='card-body'>
+                                <h5 className='card-title'>Create New Item</h5>
+                                <form>
+                                    {/* Agrega aquí los campos del formulario para crear un nuevo item */}
+                                    {/* Por ejemplo: */}
+                                    <div className='mb-3'>
+                                        <label htmlFor='item_code' className='form-label'>
+                                            Item Code
+                                        </label>
+                                        <input
+                                            type='text'
+                                            className='form-control'
+                                            id='item_code'
+                                            value={newItem.item_code}
+                                            onChange={(e) => this.handleNewItemChange('item_code', e.target.value)}
+                                            required 
+                                        />
+                                    </div>
+                                    <div className='mb-3'>
+                                        <label htmlFor='description' className='form-label'>
+                                            Description
+                                        </label>
+                                        <input
+                                            type='text'
+                                            className='form-control'
+                                            id='description'
+                                            value={newItem.description}
+                                            onChange={(e) => this.handleNewItemChange('description', e.target.value)}
+                                            required 
+                                        />
+                                    </div>
+                                    <div className='mb-3'>
+                                        <label htmlFor='price' className='form-label'>
+                                            Price
+                                        </label>
+                                        <input
+                                            type='text'
+                                            className='form-control'
+                                            id='price'
+                                            value={newItem.price}
+                                            onChange={(e) => this.handleNewItemChange('price', e.target.value)}
+                                        />
+                                    </div>
+                                    {/* ... otros campos ... */}
+                                    <button
+                                        type='button'
+                                        className='btn btn-primary'
+                                        onClick={this.handleCreateNewItem}
+                                    >
+                                        Create
+                                    </button>
+                                    <button
+                                        type='button'
+                                        className='btn btn-secondary'
+                                        onClick={this.handleCloseCreateForm}
+                                    >
+                                        Cancel
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <div className='col-md-8'>
                     <div className='card' >
                         <div className='card-body'>
                             <h5 className='card-title'>Items:</h5>
+                            <div className='col-md-8 mt-3'>
+                    <button className='btn btn-success' onClick={this.handleOpenCreateForm} style={{marginBlockEnd:'10px'}}>
+                        Create New Item
+                    </button>
+                </div>
                             <div className='mb-3'>
                                 <select
                                     className='form-select'
@@ -108,6 +241,7 @@ class AuthContent extends Component {
                         </div>
                     </div>
                 </div>
+                
                 {showModal && selectedItem && (
                     <ItemDetailsModal
                         show={showModal}

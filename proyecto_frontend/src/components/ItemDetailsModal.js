@@ -29,7 +29,7 @@ class ItemDetailsModal extends Component {
                             <ul>
                             {selectedItemDetails.map((supplierDetails) => (
                                 <li key={supplierDetails.supplier_id}>
-                                Supplier ID: {supplierDetails.supplier_id}, Name: {supplierDetails.name}, Country: {supplierDetails.country}
+                                Supplier: {supplierDetails.supplier_id}, Name: {supplierDetails.name}, Country: {supplierDetails.country}
                             </li>
                             ))}
 

@@ -2,13 +2,10 @@
 import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { request } from './axios.helper';
 
 class ItemDetailsModal extends Component {
     render() {
         const { show, onHide, selectedItem, selectedItemDetails, loadingDetails } = this.props;
-        console.log('selectedItemDetails:', selectedItemDetails); // Agregar este console.log
-        console.log('selectedItem:', selectedItem); // Agregar este console.log
  
         if (!selectedItem) {
             return null;
@@ -31,10 +28,10 @@ class ItemDetailsModal extends Component {
                             <h5>Suppliers:</h5>
                             <ul>
                             {selectedItemDetails.map((supplierDetails) => (
-        <li key={supplierDetails.supplier_id}>
-            Supplier ID: {supplierDetails.supplier_id}, Name: {supplierDetails.name}, Country: {supplierDetails.country}
-        </li>
-    ))}
+                                <li key={supplierDetails.supplier_id}>
+                                Supplier ID: {supplierDetails.supplier_id}, Name: {supplierDetails.name}, Country: {supplierDetails.country}
+                            </li>
+                            ))}
 
                             </ul>
                             <h5>Price Reductions:</h5>

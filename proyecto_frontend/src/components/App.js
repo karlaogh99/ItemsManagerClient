@@ -6,7 +6,7 @@ import AppContent from './AppContent';
 function App() {
   return (
     <div>
-        <Header pageTitle="Software for the Management"  logoSrc={logo}></Header>
+        <Header pageTitle="Items Management"  logoSrc={logo}></Header>
         <div className='container-fluid'>
           <div className='row'> 
             <div className='col'>

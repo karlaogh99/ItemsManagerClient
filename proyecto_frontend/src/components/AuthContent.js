@@ -1,7 +1,5 @@
 // AuthContent.js
 import React, { Component } from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { request } from './axios.helper';
 import ItemDetailsModal from './ItemDetailsModal';
 
@@ -88,7 +86,7 @@ class AuthContent extends Component {
                                         <th>State</th>
                                         <th>Price</th>
                                         <th>Creation date</th>
-                                        <th>User ID</th>
+                                        <th>User</th>
                                     </tr>
                                 </thead>
                                 <tbody>

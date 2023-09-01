@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import PriceReductionForm from './PriceReductionForm';
 import Modal from 'react-bootstrap/Modal';
+import InactiveDetails from './InactiveDetails';
 
 class AuthContent extends Component {
     constructor(props){
@@ -21,6 +22,8 @@ class AuthContent extends Component {
             showCreateForm: false,
             showPriceReductionForm: false, 
             selectedItemIdForPriceReduction: null, 
+            showInactiveDetails: false,
+            showModalInactive:false,
             newItem: {
                 item_code: '',
                 description: '',
@@ -80,6 +83,19 @@ class AuthContent extends Component {
      handleOpenCreateForm = () => {
         this.setState({ showCreateForm: true });
     };
+    handleOpenInactiveDetails = () => {
+        this.setState({ showInactiveDetails: true });
+      };
+      handleOpenModalInactive = () => {
+        this.setState({ showModalInactive: true });
+      };
+    
+      // Función para cerrar el modal
+      handleCloseModalInactive = () => {
+        this.setState({ showModalInactive: false });
+        this.fetchItemList();
+        this.fetchSupplierList();
+      };
 
     // Método para manejar el cierre del formulario de creación de nuevo item
     handleCloseCreateForm = () => {
@@ -256,12 +272,29 @@ handleEditItem = (item) => {
 
     render(){
         
-        const { data, filterState, showModal, selectedItem, showCreateForm, newItem, showEditForm, editedItem,showSupplierModal, availableSuppliers, selectedSupplier  } = this.state;
+        const { data, filterState, showModal, selectedItem, showCreateForm, newItem, 
+            showEditForm, editedItem,showSupplierModal, availableSuppliers, selectedSupplier,showInactiveDetails  } = this.state;
         const filteredData = data.filter((item) =>
             filterState === '' || item.state === filterState
         );
         return(
             <div className='row justify-content-md-center'>
+                <Modal show={this.state.showModalInactive} onHide={this.handleCloseModalInactive}>
+    <Modal.Header closeButton>
+        <Modal.Title>Deactivate Item</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <InactiveDetails
+            item_id={this.state.editedItem}
+            onClose={this.handleCloseModalInactive}
+        />
+    </Modal.Body>
+    <Modal.Footer>
+        <button variant='secondary' onClick={this.handleCloseModalInactive}>
+            Close
+        </button>
+    </Modal.Footer>
+</Modal>
                 <Modal show={this.state.showPriceReductionModal} onHide={this.handleClosePriceReductionModal}>
             <Modal.Header closeButton>
                 <Modal.Title>Add Price Reduction</Modal.Title>
@@ -319,7 +352,6 @@ handleEditItem = (item) => {
                             <div className='card-body'>
                                 <h5 className='card-title'>Edit Item</h5>
                                 <form>
-                                    {/* Campos para editar el elemento */}
                                     <div className='mb-3'>
                                         <label htmlFor='description' className='form-label'>
                                             Description
@@ -351,22 +383,31 @@ handleEditItem = (item) => {
                                         type='button'
                                         className='btn btn-primary'
                                         onClick={this.handleUpdateItem}
-                                        style={{margin:'10px'}}
+                                        
                                     >
                                         Update
                                     </button>
                                     <button
                                         type='button'
                                         className='btn btn-secondary'
+                                        style={{margin:'10px'}}
                                         onClick={this.handleCloseEditForm}
                                     >
                                         Cancel
                                     </button>
+                                    {editedItem.state === "Activo" ? <button
+                                        type='button'
+                                        className='btn btn-warning'
+                                        onClick={this.handleOpenModalInactive}
+                                    >
+                                        Deactivate
+                                    </button> : <div></div>}
                                 </form>
                             </div>
                         </div>
                     </div>
                 )}
+
                 {showCreateForm && (
                     <div className='col-md-8 mt-3'>
                         <div className='card'>

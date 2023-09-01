@@ -4,6 +4,8 @@ import { request } from './axios.helper';
 import ItemDetailsModal from './ItemDetailsModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import PriceReductionForm from './PriceReductionForm';
+import Modal from 'react-bootstrap/Modal';
 
 class AuthContent extends Component {
     constructor(props){
@@ -16,7 +18,9 @@ class AuthContent extends Component {
             showModal: false,
             selectedItemDetails: null,
             loadingDetails: false,
-            showCreateForm: false, 
+            showCreateForm: false,
+            showPriceReductionForm: false, 
+            selectedItemIdForPriceReduction: null, 
             newItem: {
                 item_code: '',
                 description: '',
@@ -80,6 +84,22 @@ class AuthContent extends Component {
     // Método para manejar el cierre del formulario de creación de nuevo item
     handleCloseCreateForm = () => {
         this.setState({ showCreateForm: false });
+    };
+    handleOpenPriceReductionModal = (item_id) => {
+        this.setState({
+            showPriceReductionModal: true,
+            selectedItemIdForPriceReduction: item_id,
+        });
+    };
+
+    // Función para cerrar el modal de reducción de precio
+    handleClosePriceReductionModal = () => {
+        this.setState({
+            showPriceReductionModal: false,
+            selectedItemIdForPriceReduction: null,
+        });
+        this.fetchItemList();
+        this.fetchSupplierList();
     };
     handleCreateNewItem = () => {
         const { newItem } = this.state;
@@ -149,6 +169,12 @@ handleEditItem = (item) => {
 
         // Actualiza el estado con el nuevo editedItem modificado
         this.setState({ editedItem: updatedItem });
+    };
+    handleCloseEditForm = () => {
+        this.setState({
+            showEditForm: false,
+            editedItem: null,
+        });
     };
     handleUpdateItem = () => {
         const { editedItem } = this.state;
@@ -236,6 +262,19 @@ handleEditItem = (item) => {
         );
         return(
             <div className='row justify-content-md-center'>
+                <Modal show={this.state.showPriceReductionModal} onHide={this.handleClosePriceReductionModal}>
+            <Modal.Header closeButton>
+                <Modal.Title>Add Price Reduction</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <PriceReductionForm
+                    item_id={this.state.selectedItemIdForPriceReduction}
+                    //existingReductions={/* Pasa aquí las reducciones de precio existentes para verificar superposición */}
+                    onClose={this.handleClosePriceReductionModal}
+                />
+            </Modal.Body>
+        </Modal>
+                
                 {showSupplierModal && selectedItem && (
                     <div className='col-md-8 mt-3'>
                         <div className='card'>
@@ -434,13 +473,16 @@ handleEditItem = (item) => {
                                             <td>{new Date(item.creation_date).toLocaleDateString()}</td>
                                             <td>{item.user.username}</td>
                                             <td>
-                                                <button className='btn btn-primary' onClick={() => this.openModal(item)}>Details</button>
+                                                <button className='btn btn-outline-primary' onClick={() => this.openModal(item)}>Details</button>
                                             </td>
                                             <td>
-                                                <button className='btn btn-info' onClick={() => this.handleEditItem(item)}> Edit</button>
+                                                <button className='btn btn-outline-warning' onClick={() => this.handleEditItem(item)}> Edit</button>
                                             </td>
                                             <td>
-                                                <button className = 'btn btn-secondary' onClick={() => this.openSupplierModal(item)}>Add Supplier</button>
+                                                <button className = 'btn btn-outline-success' onClick={() => this.openSupplierModal(item)}>Add Supplier</button>
+                                            </td>
+                                            <td>
+                                                <button className='btn btn-outline-primary' onClick={() =>  this.handleOpenPriceReductionModal(item.item_id)}>Add Price Reduction</button>
                                             </td>
                                         </tr>
                                     ))}

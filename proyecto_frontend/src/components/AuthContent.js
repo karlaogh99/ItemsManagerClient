@@ -132,10 +132,7 @@ class AuthContent extends Component {
             "/creates",
             newItem)
             .then(response => {
-                console.log('New item created:', response.data);
                 this.fetchItemList();
-
-                // Puedes realizar acciones adicionales después de crear el nuevo item
             })
             .catch(error => {
                 console.error('Error creating new item:', error);
@@ -198,10 +195,7 @@ handleEditItem = (item) => {
         // Realiza la solicitud PUT para actualizar el elemento
         request("PUT", `/updateitems/${editedItem.item_id}`, editedItem)
             .then(response => {
-                console.log('Item updated:', response.data);
-                // Actualiza la lista de elementos después de editar
                 this.fetchItemList();
-                // Cierra el formulario de edición
                 this.setState({
                     showEditForm: false,
                     editedItem: null,
@@ -209,7 +203,6 @@ handleEditItem = (item) => {
             })
             .catch(error => {
                 console.error('Error updating item:', error);
-                // Maneja el error de manera adecuada, como mostrando un mensaje de error al usuario
             });
     };
     openSupplierModal = item => {
@@ -256,10 +249,7 @@ handleEditItem = (item) => {
         // Realiza la solicitud para asociar el proveedor al artículo
         request('POST', `/associateSupplier/${selectedItem.item_id}/${selectedSupplier}`)
             .then(response => {
-                console.log('Supplier associated:', response.data);
-                // Actualiza la lista de elementos después de asociar el proveedor
                 this.fetchItemList();
-                // Cierra el modal de proveedores
                 this.closeSupplierModal();
             })
             .catch(error => {
@@ -268,16 +258,22 @@ handleEditItem = (item) => {
             });
     };
     
-
+    viewUser = () =>{
+        this.props.updateComponentToShow("messages");    
+    }
+    viewSQL = () =>{
+        this.props.updateComponentToShow("cheap");    
+    }
 
     render(){
-        
+        const { rol } = this.props;
         const { data, filterState, showModal, selectedItem, showCreateForm, newItem, 
             showEditForm, editedItem,showSupplierModal, availableSuppliers, selectedSupplier,showInactiveDetails  } = this.state;
         const filteredData = data.filter((item) =>
             filterState === '' || item.state === filterState
         );
         return(
+            
             <div className='row justify-content-md-center'>
                 <Modal show={this.state.showModalInactive} onHide={this.handleCloseModalInactive}>
     <Modal.Header closeButton>
@@ -474,14 +470,23 @@ handleEditItem = (item) => {
                     </div>
                 )}
                 <div className='col-md-8'>
-                    <div className='card' >
-                        <div className='card-body'>
+                    <div className='card ' >
+                        <div className='card-body'>   
                             <h5 className='card-title'>Items:</h5>
                             <div className='col-md-8 mt-3'>
-                    <button className='btn btn-success' onClick={this.handleOpenCreateForm} style={{marginBlockEnd:'10px'}}>
-                        Create New Item
-                    </button>
-                </div>
+                            <button className='btn btn-success' onClick={this.handleOpenCreateForm} >
+                                Create New Item   
+                            </button>
+                            {rol === 'admin' ? (
+                            <><button className='btn btn-dark' onClick={this.viewUser} style={{ marginLeft: '10px' }}>
+                                        Users Management 
+                                    </button>
+                                <button className='btn btn-info' onClick={this.viewSQL} style={{ marginLeft: '5px' }}>
+                                        Info 
+                                </button></>
+                            ) : <div></div>}
+                            </div>
+                            <hr></hr>
                             <div className='mb-3'>
                                 <select
                                     className='form-select'

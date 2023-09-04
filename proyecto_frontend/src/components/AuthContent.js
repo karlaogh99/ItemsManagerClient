@@ -277,7 +277,7 @@ handleEditItem = (item) => {
             <div className='row justify-content-md-center'>
                 <Modal show={this.state.showModalInactive} onHide={this.handleCloseModalInactive}>
     <Modal.Header closeButton>
-        <Modal.Title>Deactivate Item</Modal.Title>
+        <Modal.Title>Desactivate Item</Modal.Title>
     </Modal.Header>
     <Modal.Body>
         <InactiveDetails
@@ -396,7 +396,7 @@ handleEditItem = (item) => {
                                         className='btn btn-warning'
                                         onClick={this.handleOpenModalInactive}
                                     >
-                                        Deactivate
+                                        Desactivate
                                     </button> : <div></div>}
                                 </form>
                             </div>
@@ -472,8 +472,8 @@ handleEditItem = (item) => {
                 <div className='col-md-8'>
                     <div className='card ' >
                         <div className='card-body'>   
-                            <h5 className='card-title'>Items:</h5>
-                            <div className='col-md-8 mt-3'>
+                            
+                            <div style={{display: 'flex', justifyContent: 'center'}} >
                             <button className='btn btn-success' onClick={this.handleOpenCreateForm} >
                                 Create New Item   
                             </button>
@@ -482,11 +482,12 @@ handleEditItem = (item) => {
                                         Users Management 
                                     </button>
                                 <button className='btn btn-info' onClick={this.viewSQL} style={{ marginLeft: '5px' }}>
-                                        Info 
+                                        Info SQL
                                 </button></>
                             ) : <div></div>}
                             </div>
                             <hr></hr>
+                            <h3 className='card-title'>Items:</h3>
                             <div className='mb-3'>
                                 <select
                                     className='form-select'

@@ -40,7 +40,7 @@ class CheapestItems extends Component {
     
         return (
             <div>
-                <div>
+                <div style={{marginTop:'-47px',display: 'flex', justifyContent: 'center'}}>
                     <button className='btn btn-dark' onClick={this.viewUser} style={{ marginLeft: '10px' }}>
                         Users Management 
                     </button>
